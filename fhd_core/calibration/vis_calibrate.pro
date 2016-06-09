@@ -5,7 +5,7 @@ FUNCTION vis_calibrate,vis_ptr,cal,obs,status_str,psf,params,jones,vis_weight_pt
     return_cal_visibilities=return_cal_visibilities,silent=silent,initial_calibration=initial_calibration,$
     calibration_visibilities_subtract=calibration_visibilities_subtract,vis_baseline_hist=vis_baseline_hist,$
     flag_calibration=flag_calibration,vis_model_arr=vis_model_arr,calibration_bandpass_iterate=calibration_bandpass_iterate,$
-    calibration_auto_fit=calibration_auto_fit,debug_crosspol_phase=debug_crosspol_phase,_Extra=extra
+    calibration_auto_fit=calibration_auto_fit,_Extra=extra
 t0_0=Systime(1)
 error=0
 timing=-1
