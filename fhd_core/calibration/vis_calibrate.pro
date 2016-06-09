@@ -5,7 +5,7 @@ FUNCTION vis_calibrate,vis_ptr,cal,obs,status_str,psf,params,jones,vis_weight_pt
     return_cal_visibilities=return_cal_visibilities,silent=silent,initial_calibration=initial_calibration,$
     calibration_visibilities_subtract=calibration_visibilities_subtract,vis_baseline_hist=vis_baseline_hist,$
     flag_calibration=flag_calibration,vis_model_arr=vis_model_arr,calibration_bandpass_iterate=calibration_bandpass_iterate,$
-    calibration_auto_fit=calibration_auto_fit,debug_crosspol_phase=debug_crosspol_phase,_Extra=extra
+    calibration_auto_fit=calibration_auto_fit,_Extra=extra
 t0_0=Systime(1)
 error=0
 timing=-1
@@ -164,7 +164,7 @@ FOR iter=0,calibration_flag_iterate DO BEGIN
     cal=vis_calibrate_subroutine(vis_ptr,vis_model_arr,vis_weight_ptr,obs,params,cal,$
         preserve_visibilities=preserve_flag,_Extra=extra)
     IF n_pol EQ 4 THEN $
-        cal = vis_calibrate_crosspol_phase(vis_ptr,flag_ptr,obs,cal,preserve_visibilities=preserve_flag,_Extra=extra)
+        cal = vis_calibrate_crosspol_phase(vis_ptr,flag_ptr,obs,cal)
     t3_a=Systime(1)
     t2+=t3_a-t2_a
     
