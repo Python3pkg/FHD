@@ -25,6 +25,9 @@ weight = Total(weights_use,3)
 i_use = where(weight,n_use)
 pseudo_U = Reform(pseudo_U[i_use],1,n_use)
 pseudo_Q = Reform(pseudo_Q[i_use],1,n_use)
+pseudo_U_model = Reform(pseudo_U_model[i_use],1,n_use)
+pseudo_Q_model = Reform(pseudo_Q_model[i_use],1,n_use)
+
 U_Q_mix = LA_Least_Squares(pseudo_U,pseudo_Q)
 U_Q_phase = Atan(U_Q_mix[0],/phase)
 
