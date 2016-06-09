@@ -27,13 +27,9 @@ pseudo_V = Reform(pseudo_V[i_use],1,n_use)
 U_V_leakage = LA_Least_Squares(pseudo_U_mat,pseudo_V)
 leakage_scale = Real_part(U_V_leakage[0])
 leakage_offset = U_V_leakage[1]
-
-phase_offset = Asin(leakage_scale) / 2.0
+scale_factor = 1./Sqrt(2.0)
+phase_offset = Asin(leakage_scale) * scale_factor
 cal.cross_phase = phase_offset
-;gain_correction = Exp(icomp * phase_offset)
-
-;Rotate x and y calibration gain solutions by half the calculated correction
-;Note that this should completely cancel out for xx and yy
 *(cal.gain[0]) *= Exp(icomp * phase_offset / 2.0)
 *(cal.gain[1]) *= Exp(-icomp * phase_offset / 2.0)
 
