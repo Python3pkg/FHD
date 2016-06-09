@@ -121,6 +121,7 @@ IF data_flag LE 0 THEN BEGIN
              return_cal_visibilities=return_cal_visibilities,vis_model_arr=vis_model_arr,$
              calibration_visibilities_subtract=calibration_visibilities_subtract,silent=silent,$
              flag_calibration=flag_calibration,_Extra=extra)
+        vis_calibrate_qu_mixing,vis_arr,vis_model_arr,flag_arr,obs,cal
         IF ~Keyword_Set(silent) THEN print,String(format='("Calibration timing: ",A)',Strn(cal_timing))
         IF Keyword_Set(error) THEN BEGIN
             print,"Error occured during calibration. Returning."
