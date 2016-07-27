@@ -28,6 +28,7 @@ U_Q_phase = Atan(U_Q_mix[0],/phase)
 IF Keyword_Set(ionosphere_tec) THEN BEGIN
     print, "Calculating the Q-U mixing angle from the measured Ionospheric TEC is not supported yet!"
     print, "Continuing, using the model as a basis for calculating the relative rotation."
+ENDIF
 ;ENDIF ELSE BEGIN
     pseudo_Q_model = Reform(*vis_model_ptr[1] - *vis_model_ptr[0],n_freq,n_baselines,n_time)
     pseudo_Q_model = Total(Temporary(pseudo_Q_model)*flag_use,3)
