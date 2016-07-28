@@ -164,7 +164,7 @@ FOR iter=0,calibration_flag_iterate DO BEGIN
     cal=vis_calibrate_subroutine(vis_ptr,vis_model_arr,vis_weight_ptr,obs,params,cal,$
         preserve_visibilities=preserve_flag,_Extra=extra)
     IF n_pol EQ 4 THEN $
-        cal = vis_calibrate_crosspol_phase(vis_ptr,flag_ptr,obs,cal)
+        cal = vis_calibrate_crosspol_phase(vis_ptr,vis_weight_ptr,obs,cal)
     t3_a=Systime(1)
     t2+=t3_a-t2_a
     

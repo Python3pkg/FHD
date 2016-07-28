@@ -1,4 +1,4 @@
-FUNCTION vis_calibrate_crosspol_phase,vis_ptr,flag_ptr,obs,cal
+FUNCTION vis_calibrate_crosspol_phase,vis_ptr,vis_weight_ptr,obs,cal
 n_pol = obs.n_pol
 IF n_pol LT 4 THEN RETURN, cal
 
@@ -9,14 +9,14 @@ n_time=cal.n_time
 n_baselines=obs.nbaselines
   
 ;Use the xx flags (yy should be identical at this point)
-flag_use = 0>Reform(*flag_ptr[0],n_freq,n_baselines,n_time)<1
+weights_use = 0>Reform(*vis_weight_ptr[0],n_freq,n_baselines,n_time)<1
 
 ;average the visibilities in time
 pseudo_U = Reform(*vis_ptr[3] + *vis_ptr[2],n_freq,n_baselines,n_time)
-pseudo_U = Total(Temporary(pseudo_U)*flag_use,3)
+pseudo_U = Total(Temporary(pseudo_U)*weights_use,3)
 pseudo_V = Reform(*vis_ptr[3] - icomp*(*vis_ptr[2]),n_freq,n_baselines,n_time)
-pseudo_V = Total(Temporary(pseudo_V)*flag_use,3)
-weight = Total(flag_use,3)
+pseudo_V = Total(Temporary(pseudo_V)*weights_use,3)
+weight = Total(weights_use,3)
 i_use = where(weight,n_use)
 pseudo_U = Reform(pseudo_U[i_use],1,n_use)
 pseudo_U_mat = [pseudo_U, Reform(fltarr(n_use) +1.0, 1,n_use)]
@@ -34,10 +34,10 @@ cal.cross_phase = phase_offset
 
 ;;average the visibilities in time
 ;pseudo_U = Reform(*vis_ptr[3] + *vis_ptr[2],n_freq,n_baselines,n_time)
-;pseudo_U = Total(Temporary(pseudo_U)*flag_use,3)
+;pseudo_U = Total(Temporary(pseudo_U)*weights_use,3)
 ;pseudo_V = Reform(*vis_ptr[3] - icomp*(*vis_ptr[2]),n_freq,n_baselines,n_time)
-;pseudo_V = Total(Temporary(pseudo_V)*flag_use,3)
-;weight = Total(Temporary(flag_use),3)
+;pseudo_V = Total(Temporary(pseudo_V)*weights_use,3)
+;weight = Total(Temporary(weights_use),3)
 ;
 ;gain_x = *(cal.gain[0])
 ;gain_y = *(cal.gain[1])
