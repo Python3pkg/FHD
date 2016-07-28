@@ -11,6 +11,7 @@ n_baselines=obs.nbaselines
   
 ;Use the xx flags (yy should be identical at this point)
 weights_use = 0>Reform(*vis_weight_ptr[0],n_freq,n_baselines,n_time)<1
+
 ;average the visibilities in time
 pseudo_U = Reform(*vis_ptr[3] + *vis_ptr[2],n_freq,n_baselines,n_time)
 pseudo_U = Total(Temporary(pseudo_U)*weights_use,3)
