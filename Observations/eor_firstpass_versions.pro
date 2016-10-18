@@ -1,4 +1,4 @@
-pro eor_firstpass_versions
+pro eor_firstpass_versions, aws=aws, obs_id=obs_id, output_directory=output_directory, version=version, vis_file_list=vis_file_list
 except=!except
 !except=0
 heap_gc 
@@ -8,13 +8,15 @@ heap_gc
 
 ; parse command line args
 compile_opt strictarr
-args = Command_Line_Args(count=nargs)
-obs_id = args[0]
-;obs_id = '1061311664'
-output_directory = args[1]
-;output_directory = '/nfs/mwa-09/r1/djc/EoR2013/Aug23/'
-version = args[2]
-;version = 'nb_decon_Feb2016'
+if ~keyword_set(aws) then begin
+   args = Command_Line_Args(count=nargs)
+   obs_id = args[0]
+   ;obs_id = '1061311664'
+   output_directory = args[1]
+   ;output_directory = '/nfs/mwa-09/r1/djc/EoR2013/Aug23/'
+   version = args[2]
+   ;version = 'nb_decon_Feb2016'
+endif
 cmd_args={version:version}
 
 ; Set default values for everything
@@ -1342,13 +1344,15 @@ case version of
    
 endcase
    
-if version EQ 'nb_pytest' then begin
-  vis_file_list = '/nfs/mwa-03/r1/EoR2013/cotter_pyuvfits_test/'+strtrim(string(obs_id),2)+'.uvfits'
-endif else begin
-  SPAWN, 'read_uvfits_loc.py -v ' + STRING(uvfits_version) + ' -s ' + $
-    STRING(uvfits_subversion) + ' -o ' + STRING(obs_id), vis_file_list
-  ;vis_file_list=vis_file_list ; this is silly, but it's so var_bundle sees it.
+if ~keyword_set(aws) then begin   
+   if version EQ 'nb_pytest' then begin
+     vis_file_list = '/nfs/mwa-03/r1/EoR2013/cotter_pyuvfits_test/'+strtrim(string(obs_id),2)+'.uvfits'
+   endif else begin
+     SPAWN, 'read_uvfits_loc.py -v ' + STRING(uvfits_version) + ' -s ' + $
+       STRING(uvfits_subversion) + ' -o ' + STRING(obs_id), vis_file_list
+   ;vis_file_list=vis_file_list ; this is silly, but it's so var_bundle sees it.
 endelse
+endif
 undefine, uvfits_subversion, uvfits_version
 fhd_file_list=fhd_path_setup(vis_file_list,version=version,output_directory=output_directory)
 healpix_path=fhd_path_setup(output_dir=output_directory,subdir='Healpix',output_filename='Combined_obs',version=version)
