@@ -54,7 +54,7 @@ def main():
 	idl = pidly.IDL('/usr/local/bin/idl -IDL_DEVICE ps')
 	for i, obs_id in enumerate(obsids):
 		print 'Running firstpass on obsid {}...'.format(obs_id)
-		idl('eor_firstpass_versions, /aws, obs_id = {}, output_directory = {}, version = {}, vis_file_list = {}'.format(obs_id, output_directory, version, vis_file_list[i]))
+		idl('eor_firstpass_versions, /aws, obs_id = \'{}\', output_directory = \'{}\', version = \'{}\', vis_file_list = \'{}\''.format(obs_id, output_directory, version, vis_file_list[i]))
 	idl.close()
 	
 	#Copy firstpass run to S3
