@@ -28,6 +28,8 @@ def main():
 		obsids = nonredundant_obsids
 		
 	#Retrieve uvfits and metafits files from S3
+	if not os.path.isdir('/tmp/uvfits'):
+		os.system('mkdir /tmp/uvfits')
 	directory_contents = os.listdir('/tmp/uvfits')
 	for obs_id in obsids:
 		download_uvfits = True
@@ -47,6 +49,8 @@ def main():
 	#Run firstpass
 	vis_file_list = ['/tmp/uvfits/{}.uvfits'.format(obs_id) for obs_id in obsids]
 	output_directory = '/tmp'
+	if not os.path.isdir('/tmp/{}'.format(version)):
+		os.system('mkdir /tmp/{}'.format(version))
 	idl = pidly.IDL('/usr/local/bin/idl -IDL_DEVICE ps')
 	for i, obs_id in enumerate(obsids):
 		print 'Running firstpass on obsid {}...'.format(obs_id)
@@ -54,7 +58,7 @@ def main():
 	idl.close()
 	
 	#Copy firstpass run to S3
-	print 'Copying data from run {} to S3...'
+	print 'Copying data from run {} to S3...'.format(version)
 	os.system('aws s3 cp /tmp/{} s3://mwatest/FHD_FIRST_PASS/{} --recursive'.format(version, version))
 	
 	#Delete uvfits and metafits files
