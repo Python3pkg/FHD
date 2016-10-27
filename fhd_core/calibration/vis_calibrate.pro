@@ -5,7 +5,7 @@ FUNCTION vis_calibrate,vis_ptr,cal,obs,status_str,psf,params,jones,vis_weight_pt
     return_cal_visibilities=return_cal_visibilities,silent=silent,initial_calibration=initial_calibration,$
     calibration_visibilities_subtract=calibration_visibilities_subtract,vis_baseline_hist=vis_baseline_hist,$
     flag_calibration=flag_calibration,vis_model_arr=vis_model_arr,calibration_bandpass_iterate=calibration_bandpass_iterate,$
-    calibration_auto_fit=calibration_auto_fit,_Extra=extra
+    calibration_auto_fit=calibration_auto_fit,perfect_cal=perfect_cal,debug_filter=debug_filter,_Extra=extra
 t0_0=Systime(1)
 error=0
 timing=-1
@@ -92,6 +92,11 @@ vis_model_arr=vis_source_model(cal.skymodel,obs,status_str,psf,params,vis_weight
     timing=model_timing,silent=silent,error=error,/calibration_flag,spectral_model_uv_arr=spectral_model_uv_arr,_Extra=extra)    
 t1=Systime(1)-t0_0
 
+
+
+;delay filter test
+if keyword_set(debug_filter) then vis_delay_filter, vis_model_arr, vis_weight_ptr, params, obs
+
 vis_auto=vis_extract_autocorr(obs,vis_arr = vis_ptr,/time_average,auto_tile_i=auto_tile_i)
 IF Keyword_Set(cal.auto_initialize) THEN BEGIN
     IF Keyword_Set(vis_auto) THEN $
@@ -157,6 +162,11 @@ IF Keyword_Set(calibration_visibilities_subtract) OR Keyword_Set(vis_baseline_hi
 IF N_Elements(calibration_flag_iterate) EQ 0 THEN calibration_flag_iterate=0
 ;    IF Keyword_Set(flag_calibration) THEN calibration_flag_iterate=1 ELSE calibration_flag_iterate=0
 
+
+;Temp
+cal_auto=vis_cal_auto_fit(obs,cal,vis_auto=vis_auto,vis_model_auto=vis_auto_model,auto_tile_i=auto_tile_i)
+save, cal_auto , filename='/nfs/mwa-09/r1/djc/EoR2013/Aug23/fhd_nb_hera_x_paper_test_autos/cal_auto.sav'
+
 t2=0
 cal_base=cal & FOR pol_i=0,nc_pol-1 DO cal_base.gain[pol_i]=Ptr_new(*cal.gain[pol_i])
 FOR iter=0,calibration_flag_iterate DO BEGIN
@@ -196,7 +206,16 @@ basename=file_basename(file_path_fhd)
 dirpath=file_dirname(file_path_fhd)
 image_path=filepath(basename,root=dirpath,sub='output_images')
 ;make sure to plot both, if autocorrelations are used for the calibration solution
-plot_cals,cal,obs,cal_res=cal_res,cal_auto=cal_auto,file_path_base=image_path,_Extra=extra
+;plot_cals,cal,obs,cal_res=cal_res,cal_auto=cal_auto,file_path_base=image_path,_Extra=extra
+
+If keyword_set(perfect_cal) then begin
+
+  one_arr=complex(FLTARR(384,128))
+  one_arr[*,*]=1.
+  *cal.gain[0]=one_arr
+  *cal.gain[1]=one_arr
+  
+endif
 
 IF Keyword_Set(calibration_auto_fit) THEN cal=cal_auto
 vis_cal=vis_calibration_apply(vis_ptr,cal)

@@ -3,11 +3,11 @@ FUNCTION beam_setup,obs,status_str,antenna,file_path_fhd=file_path_fhd,restore_l
     silent=silent,psf_dim=psf_dim,psf_resolution=psf_resolution,psf_image_resolution=psf_image_resolution,$
     swap_pol=swap_pol,no_save=no_save,beam_pol_test=beam_pol_test,$
     beam_model_version=beam_model_version,beam_dim_fit=beam_dim_fit,save_antenna_model=save_antenna_model,$
-    interpolate_kernel=interpolate_kernel,_Extra=extra
+    interpolate_kernel=interpolate_kernel,debug_antenna=debug_antenna,_Extra=extra
 
 compile_opt idl2,strictarrsubs  
 t00=Systime(1)
-
+save_antenna_model=1
 antenna_flag=Arg_present(antenna)
 IF N_Elements(save_antenna_model) EQ 0 THEN save_antenna_model=0
 IF Keyword_Set(no_save) THEN save_antenna_model=0
@@ -37,8 +37,10 @@ nbaselines=obs.nbaselines
 dimension=obs.dimension
 elements=obs.elements
 degpix=obs.degpix
+
 antenna=fhd_struct_init_antenna(obs,beam_model_version=beam_model_version,psf_resolution=psf_resolution,psf_dim=psf_dim,$
     psf_intermediate_res=psf_intermediate_res,psf_image_resolution=psf_image_resolution,timing=t_ant,_Extra=extra)
+if ~keyword_set(debug_antenna) then antenna = getvar_savefile('/nfs/mwa-09/r1/djc/EoR2013/Aug23/fhd_nb_hera_imag_test/heraxpaper_antenna.sav','antenna')
 
 IF Keyword_Set(swap_pol) THEN pol_arr=[[1,1],[0,0],[1,0],[0,1]] ELSE pol_arr=[[0,0],[1,1],[0,1],[1,0]] 
 

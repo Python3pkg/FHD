@@ -23,11 +23,11 @@ pro vis_delay_spectrum, dir, obsid=obsid,spec_window_type=spec_window_type, plot
   for poli=0,1 do flags[*,*,poli] = *vis_weights[poli]
   undefine_fhd,vis_weights
   data = Complex(fltarr(nfreq,nbl,2)) ; Stack pols
-  restore, dir+'/vis_data/'+obsid+'_vis_XX.sav'
-  data[*,*,0] = *vis_ptr
-  restore, dir+'/vis_data/'+obsid+'_vis_YY.sav'
-  data[*,*,1] = *vis_ptr
-  undefine_fhd,vis_ptr
+  restore, dir+'/vis_data/'+obsid+'_vis_model_XX.sav' ;My change -- cut on model only
+  data[*,*,0] = *vis_model_ptr
+  restore, dir+'/vis_data/'+obsid+'_vis_model_YY.sav'
+  data[*,*,1] = *vis_model_ptr
+  undefine_fhd,vis_model_ptr
   ; Only keep unflagged baselines
   flag_test = Total(Total(flags>0,1),2)
   bi_use=where(flag_test eq 2*nfreq)
@@ -70,7 +70,9 @@ pro vis_delay_spectrum, dir, obsid=obsid,spec_window_type=spec_window_type, plot
     data = data * window_expand
   endif
   ; FFT
+  stop
   spectra = abs(shift(fft(data,dim=1),nfreq/2,0,0))^2. ; Shift only in fft direction.
+  stop
   undefine_fhd,data
   ; fold over
   ndelay = nfreq/2.
@@ -109,4 +111,5 @@ pro vis_delay_spectrum, dir, obsid=obsid,spec_window_type=spec_window_type, plot
                        kperp_plot_range=[.007, .3], data_range=[1e3,2e15];, kpar_plot_range=[.003,4]
     ; Note kpar_plot_range doesn't quite work right now - setting it prevents the DC mode from plotting.
   endif
+  stop
 end

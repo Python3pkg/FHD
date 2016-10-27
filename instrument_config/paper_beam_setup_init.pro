@@ -1,4 +1,4 @@
-FUNCTION paper_beam_setup_init,obs,antenna_str,antenna_size=antenna_size,dead_dipole_list=dead_dipole_list
+FUNCTION paper_beam_setup_init,obs,antenna_str,antenna_size=antenna_size,dead_dipole_list=dead_dipole_list,_EXTRA = EXTRA 
 
 ;polarization 0: x, 1: y
 

@@ -10,7 +10,7 @@ PRO fhd_main, file_path_vis, status_str, export_images=export_images, cleanup=cl
     return_decon_visibilities=return_decon_visibilities, snapshot_healpix_export=snapshot_healpix_export, cmd_args=cmd_args, log_store=log_store,$
     generate_vis_savefile=generate_vis_savefile, model_visibilities=model_visibilities, model_catalog_file_path=model_catalog_file_path,$
     transfer_weights=transfer_weights, flag_calibration=flag_calibration, production=production, deproject_w_term=deproject_w_term, $
-    cal_sim_input=cal_sim_input, eor_savefile=eor_savefile, enhance_eor=enhance_eor, sim_noise=sim_noise,_Extra=extra
+    cal_sim_input=cal_sim_input, eor_savefile=eor_savefile, enhance_eor=enhance_eor, sim_noise=sim_noise,debug_double_read=debug_double_read,_Extra=extra
 
 compile_opt idl2,strictarrsubs    
 except=!except
@@ -39,7 +39,18 @@ IF data_flag LE 0 THEN BEGIN
     IF Keyword_Set(log_store) THEN Journal,log_filepath
     fhd_save_io,status_str,file_path_fhd=file_path_fhd,/reset
     
+    if ~keyword_set(debug_double_read) then begin
     uvfits_read,hdr,params,vis_arr,vis_weights,file_path_vis=file_path_vis,n_pol=n_pol,silent=silent,error=error,_Extra=extra
+    endif else begin
+    	uvfits_read,hdr,params,vis_arr_temp,vis_weights_temp,file_path_vis=file_path_vis,n_pol=n_pol,silent=silent,error=error,_Extra=extra
+    	file_path_vis = '/nfs/mwa-05/r1/EoRuvfits/HERA_all_raw_idr1/zen.2457458.55666.yy.uvU.uvfits'
+    	uvfits_read,hdr,params,vis_arr_temp2,vis_weights_temp2,file_path_vis=file_path_vis,n_pol=n_pol,silent=silent,error=error,_Extra=extra
+    	n_pol=2
+    	hdr.n_pol = 2
+    	vis_arr = [PTR_new(*vis_arr_temp[0]), PTR_new(*vis_arr_temp2[0])]
+    	vis_weights = [PTR_new(*vis_weights_temp[0]), PTR_new(*vis_weights_temp2[0])]
+    	undefine, vis_weights_temp, vis_weights_temp2,vis_arr_temp2, vis_arr_temp
+    endelse	
     IF Keyword_Set(error) THEN BEGIN
       print,"Error occured while reading uvfits data. Returning."
       RETURN
@@ -146,6 +157,8 @@ IF data_flag LE 0 THEN BEGIN
             diffuse_model=diffuse_model,return_cal=return_cal_visibilities,_Extra=extra)
         vis_model_arr=vis_source_model(skymodel_update,obs,status_str,psf,params,vis_weights,0,jones,model_uv_arr=model_uv_arr2,$
             timing=model_timing,silent=silent,error=error,vis_model_ptr=vis_model_arr,calibration_flag=0,_Extra=extra) 
+        ;delay filter test
+        ;vis_delay_filter, vis_model_arr, vis_weights, params, obs
         IF Min(Ptr_valid(model_uv_arr)) GT 0 THEN FOR pol_i=0,n_pol-1 DO *model_uv_arr[pol_i]+=*model_uv_arr2[pol_i] $
             ELSE model_uv_arr=Pointer_copy(model_uv_arr2) 
         undefine_fhd,model_uv_arr2

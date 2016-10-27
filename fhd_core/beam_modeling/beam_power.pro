@@ -2,7 +2,7 @@ FUNCTION beam_power,antenna1,antenna2,ant_pol1=ant_pol1,ant_pol2=ant_pol2,freq_i
     psf_image_dim=psf_image_dim,psf_intermediate_res=psf_intermediate_res,$
     beam_mask_electric_field=beam_mask_electric_field,beam_mask_threshold=beam_mask_threshold,$
     xvals_uv_superres=xvals_uv_superres,yvals_uv_superres=yvals_uv_superres,zen_int_x=zen_int_x,zen_int_y=zen_int_y,$
-    interpolate_beam_threshold=interpolate_beam_threshold,debug_beam_clipping=debug_beam_clipping,debug_beam_conjugate=debug_beam_conjugate
+    interpolate_beam_threshold=interpolate_beam_threshold,debug_beam_clipping=debug_beam_clipping,debug_beam_conjugate=debug_beam_conjugate,debug_triangle=debug_triangle
     
 freq_center=antenna1.freq[freq_i]
 dimension_super=(size(xvals_uv_superres,/dimension))[0]
@@ -82,5 +82,28 @@ IF Keyword_Set(interpolate_beam_threshold) THEN BEGIN
 ENDIF ELSE psf_base_superres*=uv_mask_superres
 psf_base_superres*=psf_val_ref/Total(psf_base_superres)
 IF Keyword_Set(debug_beam_conjugate) THEN psf_base_superres=Conj(psf_base_superres)
-RETURN,psf_base_superres
+
+;;;;;
+if keyword_set(debug_triangle) then begin
+max_ind = where(abs(psf_base_superres) EQ max(abs(psf_base_superres)))
+max_ind_col = max_ind mod N_elements(psf_base_superres[0,*])
+max_val = abs(psf_base_superres[max_ind])
+uvbeam_input_1D = FLTARR(N_elements(psf_base_superres[0,*]))
+max_val_arr = FLTARR(N_elements(psf_base_superres[0,*]),N_elements(psf_base_superres[0,*]))
+max_val_arr[*,*] = max_val
+
+uvbeam_input_1D[max_ind_col-500:max_ind_col-1.] = (1./500.)*INDGEN(500,/float) 
+uvbeam_input_1D[max_ind_col:max_ind_col+500.-1.] = -(1./500.)*INDGEN(500,/float)+1.
+uvbeam_input = uvbeam_input_1D # transpose(uvbeam_input_1D) * max_val_arr
+uvbeam_input = uvbeam_input + Complex(0,1)*0
+
+uv_xvals = meshgrid(dimension_super, dimension_super, 1)
+uv_yvals = meshgrid(dimension_super, dimension_super, 2)
+uvbeam_input2 = (Abs(dimension_super/2. - uv_xvals) * Abs(dimension_super/2. - uv_yvals))/(dimension_super/2.)^2.
+uvbeam_input2 *=max(abs(psf_base_superres))
+endif
+
+;RETURN, uvbeam_input2
+IF ~keyword_set(debug_triangle) then RETURN,psf_base_superres else RETURN, uvbeam_input
+;RETURN, uvbeam_input
 END
