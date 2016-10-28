@@ -19,7 +19,7 @@ pro eor_firstpass_versions
 	endif else begin
 	   obs_id = '1061316296'
 	   output_directory = '/nfs/mwa-09/r1/djc/EoR2013/Aug23/'
-	   version = 'nb_hera_x_paper_test_autos'
+	   version = 'nb_hera_x_paper_test_autos1'
 	endelse
 	cmd_args={version:version}
 	
@@ -2664,7 +2664,7 @@ calibration_flux_threshold = .1
 cal_mode_fit=0
 undefine, diffuse_calibrate, diffuse_model,cal_cable_reflection_fit,cal_cable_reflection_mode_fit,cal_cable_reflection_correct
 end
-'nb_hera_x_paper_test_autos':begin
+'nb_hera_x_paper_test_autos1':begin
 	instrument= 'hera'
 	nfreq_avg=1024
 	calibration_catalog_file_path=filepath('GLEAMIDR4_181_consistent.sav',root=rootdir('FHD'),subdir='catalog_data')
@@ -2691,7 +2691,7 @@ end
 
 endcase
 
-if (version EQ 'nb_hera_imag_test') OR (version EQ 'nb_paper_imag_test7') OR (version EQ 'nb_hera_x_paper_test_autos') then begin
+if (version EQ 'nb_hera_imag_test') OR (version EQ 'nb_paper_imag_test7') OR (version EQ 'nb_hera_x_paper_test_autos1') then begin
 	vis_file_list = '/nfs/mwa-05/r1/EoRuvfits/HERA_all_raw_idr1/zen.2457458.55666.xx.uvU.uvfits'
 endif else begin
 	SPAWN, 'read_uvfits_loc.py -v ' + STRING(uvfits_version) + ' -s ' + $
