@@ -18,20 +18,40 @@ def main():
 	cotter_version = 5
 	cotter_subversion = 1
 		
-	download_obsids(obs_id, cotter_version, cotter_subversion)
+	try:	
+		download_obsids(obs_id, cotter_version, cotter_subversion)
+	except:
+		print 'ERROR downloading obsid {} from S3.'.format(obs_id)
+		sys.stdout.flush()
+		os.system('aws s3 cp /tmp/{} s3://mwatest/FHD_FIRST_PASS/{}'.format(log_filename, log_filename))
+		sys.exit(1)
 	
-	run_firstpass(obsids, version)
+	try:
+		run_firstpass(obsids, version)
+	except:
+		print 'ERROR running firstpass.'
+		sys.stdout.flush()
+		os.system('aws s3 cp /tmp/{} s3://mwatest/FHD_FIRST_PASS/{}'.format(log_filename, log_filename))
+		sys.exit(1)
 	
 	#Copy firstpass run to S3
 	print 'Copying data from run {} to S3...'.format(version)
 	sys.stdout.flush()
-	os.system('aws s3 cp /tmp/{} s3://mwatest/FHD_FIRST_PASS/{} --recursive'.format(version, version))s
-	os.system('aws s3 cp /tmp/{} s3://mwatest/FHD_FIRST_PASS/{}'.format(log_filename, log_filename))
-	
+	try:
+		os.system('aws s3 cp /tmp/{} s3://mwatest/FHD_FIRST_PASS/{} --recursive'.format(version, version))
+	except:
+		print 'ERROR uploading data to S3.;
+		sys.stdout.flush()
+		os.system('aws s3 cp /tmp/{} s3://mwatest/FHD_FIRST_PASS/{}'.format(log_filename, log_filename))
+		sys.exit(1)
+		
 	#Delete uvfits and metafits files
 	print 'Deleting local uvfits and metafits files...'
 	sys.stdout.flush()
 	os.system('rm -r /tmp/uvfits')
+	
+	#Copy log file to S3
+	os.system('aws s3 cp /tmp/{} s3://mwatest/FHD_FIRST_PASS/{}'.format(log_filename, log_filename))
 	
 	
 def download_obsids(obs_id, cotter_version, cotter_subversion):
