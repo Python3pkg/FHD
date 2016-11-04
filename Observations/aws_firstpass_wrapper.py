@@ -5,7 +5,7 @@ import sys
 import os
 
 # Call this script on the command line:
-# nohup python aws_firstpass_wrapper.py <obs_id> <version> <log_filename> > <log_filename> &
+# nohup python aws_firstpass_wrapper.py <obs_id> <version> <log_filename> > /tmp/<log_filename> &
 
 def main():
 
@@ -23,16 +23,14 @@ def main():
 	except:
 		print 'ERROR downloading obsid {} from S3.'.format(obs_id)
 		sys.stdout.flush()
-		os.system('aws s3 cp /tmp/{} s3://mwatest/FHD_FIRST_PASS/{}'.format(log_filename, log_filename))
-		sys.exit(1)
+		error_procedure(log_filename)
 	
 	try:
 		run_firstpass(obsids, version)
 	except:
 		print 'ERROR running firstpass.'
 		sys.stdout.flush()
-		os.system('aws s3 cp /tmp/{} s3://mwatest/FHD_FIRST_PASS/{}'.format(log_filename, log_filename))
-		sys.exit(1)
+		error_procedure(log_filename)
 	
 	#Copy firstpass run to S3
 	print 'Copying data from run {} to S3...'.format(version)
@@ -40,10 +38,9 @@ def main():
 	try:
 		os.system('aws s3 cp /tmp/{} s3://mwatest/FHD_FIRST_PASS/{} --recursive'.format(version, version))
 	except:
-		print 'ERROR uploading data to S3.;
+		print 'ERROR uploading data to S3.'
 		sys.stdout.flush()
-		os.system('aws s3 cp /tmp/{} s3://mwatest/FHD_FIRST_PASS/{}'.format(log_filename, log_filename))
-		sys.exit(1)
+		error_procedure(log_filename)
 		
 	#Delete uvfits and metafits files
 	print 'Deleting local uvfits and metafits files...'
@@ -90,6 +87,11 @@ def run_firstpass(obs_id, version):
 	sys.stdout.flush()
 	idl('eor_firstpass_versions, /aws, obs_id = \'{}\', output_directory = \'{}\', version = \'{}\', vis_file_list = \'{}\''.format(obs_id, output_directory, version, vis_file_list))
 	idl.close()
+	
+	
+def error_procedure(log_filename):
+	os.system('aws s3 cp /tmp/{} s3://mwatest/FHD_FIRST_PASS/{}'.format(log_filename, log_filename))
+	sys.exit(1)
 	
 
 if __name__ == '__main__':
