@@ -43,7 +43,7 @@ IF data_flag LE 0 THEN BEGIN
     uvfits_read,hdr,params,vis_arr,vis_weights,file_path_vis=file_path_vis,n_pol=n_pol,silent=silent,error=error,_Extra=extra
     endif else begin
     	uvfits_read,hdr,params,vis_arr_temp,vis_weights_temp,file_path_vis=file_path_vis,n_pol=n_pol,silent=silent,error=error,_Extra=extra
-    	file_path_vis = '/nfs/mwa-05/r1/EoRuvfits/HERA_all_raw_idr1/zen.2457458.55666.yy.uvU.uvfits'
+    	file_path_vis = '/nfs/mwa-05/r1/EoRuvfits/HERA_all_raw_idr1/new_uvws/zen.2457458.16694.yy.uvUF.uvfits'
     	uvfits_read,hdr,params,vis_arr_temp2,vis_weights_temp2,file_path_vis=file_path_vis,n_pol=n_pol,silent=silent,error=error,_Extra=extra
     	n_pol=2
     	hdr.n_pol = 2

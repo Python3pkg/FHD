@@ -19,7 +19,7 @@ pro eor_firstpass_versions
 	endif else begin
 	   obs_id = '1061316296'
 	   output_directory = '/nfs/mwa-09/r1/djc/EoR2013/Aug23/'
-	   version = 'nb_hera_x_paper_test_autos1'
+	   version = 'nb_hera_x_paper_test'
 	endelse
 	cmd_args={version:version}
 	
@@ -2632,13 +2632,14 @@ model_catalog_file_path=filepath('mwa_calibration_source_list.sav',root=rootdir(
 recalculate_all=1
 mapfn_recalculate=0
 end
-'nb_paper_imag_test7':begin
+'nb_paper_imag_test':begin
 instrument = 'paper'
 	hera_inds = [80,104,96,64,53,31,65,88,9,20,89,43,105,22,81,10,72,112,97]
 	paper_inds = [1,3,4,13,15,16,23,26,37,38,41,42,46,47,49,50,56,57,58,59,61,63,66,67,70,71,73,74,82,83,87,90,98,99,103,106,114,115,116,117,118,119,120,121,122,123,124,125,126,127]
 	paper_hex = [2,21,45,17,68,62,0,113,84,100,85,54,69,40,101,102,44,14,86]
 	paper_pol = [25,19,48,29,24,28,55,34,27,51,35,75,18,76,5,77,32,78,30,79,33,91,6,92,52,93,7,94,12,95,8,107,11,108,36,109,60,110,39,111]
 	tile_flag_list = [paper_hex,paper_pol,hera_inds]
+	;tile_flag_list = hera_inds
 nfreq_avg=1024
 calibration_catalog_file_path=filepath('GLEAMIDR4_181_consistent.sav',root=rootdir('FHD'),subdir='catalog_data')
 	cable_bandpass_fit=0
@@ -2648,7 +2649,7 @@ calibration_catalog_file_path=filepath('GLEAMIDR4_181_consistent.sav',root=rootd
 	undefine, diffuse_calibrate, diffuse_model,cal_cable_reflection_fit,cal_cable_reflection_mode_fit,cal_cable_reflection_correct
 	beam_offset_time=300
 	flag_calibration=0
-	max_calibration_sources=8000
+	max_calibration_sources=1000
 	debug_double_read=1
 	min_cal_baseline = 10
 	calibration_polyfit=0
@@ -2664,12 +2665,12 @@ calibration_flux_threshold = .1
 cal_mode_fit=0
 undefine, diffuse_calibrate, diffuse_model,cal_cable_reflection_fit,cal_cable_reflection_mode_fit,cal_cable_reflection_correct
 end
-'nb_hera_x_paper_test_autos1':begin
+'nb_hera_x_paper_test':begin
 	instrument= 'hera'
 	nfreq_avg=1024
 	calibration_catalog_file_path=filepath('GLEAMIDR4_181_consistent.sav',root=rootdir('FHD'),subdir='catalog_data')
 calibration_flux_threshold = .1
-max_calibration_sources=8000
+max_calibration_sources=1000
 	cable_bandpass_fit=0
 	saved_run_bp=0
 	cal_mode_fit=0
@@ -2686,13 +2687,13 @@ undefine, diffuse_calibrate, diffuse_model,cal_cable_reflection_fit,cal_cable_re
 	min_cal_baseline = 10
 	calibration_polyfit=0
 	bandpass_calibrate=0
-	calibration_auto_fit=1
+	;calibration_auto_fit=1
 end
 
 endcase
 
-if (version EQ 'nb_hera_imag_test') OR (version EQ 'nb_paper_imag_test7') OR (version EQ 'nb_hera_x_paper_test_autos1') then begin
-	vis_file_list = '/nfs/mwa-05/r1/EoRuvfits/HERA_all_raw_idr1/zen.2457458.55666.xx.uvU.uvfits'
+if (version EQ 'nb_herapaper_imag_test') OR (version EQ 'nb_paper_imag_test') OR (version EQ 'nb_hera_x_paper_test') then begin
+	vis_file_list = '/nfs/mwa-05/r1/EoRuvfits/HERA_all_raw_idr1/new_uvws/zen.2457458.16694.xx.uvUF.uvfits'
 endif else begin
 	SPAWN, 'read_uvfits_loc.py -v ' + STRING(uvfits_version) + ' -s ' + $
 		STRING(uvfits_subversion) + ' -o ' + STRING(obs_id), vis_file_list
