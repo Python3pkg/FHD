@@ -107,9 +107,9 @@ case version of
 ;	set_sidelobe_keywords=1
    end
 
-   'sim_mwa_diffuse_low-prec': begin
+   'sim_mwa_diffuse_new-FHD': begin
 	diffuse_model=filepath('gsm_150MHz.sav',root=rootdir('FHD'),subdir='catalog_data')
-	dimension=1024
+	dimension=512
 	instrument='mwa'
         include_catalog_sources=0
 ;	sources_file_name='GLEAM_EGC_catalog'
