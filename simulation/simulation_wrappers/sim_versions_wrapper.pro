@@ -96,13 +96,34 @@ endif
 
 case version of
 
+   'sim_hera19_diffuse_fine_comp_1hour': begin
+	dimension=1024
+	diffuse_model=filepath('gsm_150MHz.sav',root=rootdir('FHD'),subdir='catalog_data')
+	instrument='hera'
+        include_catalog_sources=0
+;	sources_file_name='GLEAM_EGC_catalog'
+	nfreq_avg=203
+	beam_model_version=2
+;	set_sidelobe_keywords=1
+   end
 
-   'sim_hera19_fine_uncomp_1hour': begin
+   'sim_hera19_diffuse_fine_uncomp_1hour': begin
+	dimension=1024
+	diffuse_model=filepath('gsm_150MHz.sav',root=rootdir('FHD'),subdir='catalog_data')
+	instrument='hera'
+        include_catalog_sources=0
+;	sources_file_name='GLEAM_EGC_catalog'
+	nfreq_avg=1024
+	beam_model_version=2
+;	set_sidelobe_keywords=1
+   end
+
+   'sim_hera19_point_fine_comp_1hour': begin
 	dimension=1024
 	instrument='hera'
 	max_model_sources=10000
 	sources_file_name='GLEAM_EGC_catalog'
-	nfreq_avg=1024
+	nfreq_avg=203
 	beam_model_version=2
 ;	set_sidelobe_keywords=1
    end
@@ -145,8 +166,26 @@ case version of
 	kbinsize=0.5
    end
 
+   'sim_ewbase_mwa_kbin_few-src': begin  ;formerly _hera_
+	dimension=1024
+	;instrument='hera'
+	instrument='mwa'
+	sources_file_name='GLEAM_EGC_catalog'
+	max_model_sources=50
+	beam_model_version=2
+	nfreq_avg=203
+   end
 
-   'sim_ewbase_hera_kbin_v2': begin
+   'sim_ewbase_hera_kbin_more-src': begin
+	dimension=1024
+	instrument='hera'
+	sources_file_name='GLEAM_EGC_catalog'
+	max_model_sources=50000
+	beam_model_version=2
+	nfreq_avg=203
+   end
+
+   'sim_ewbase_hera_kbin_t2_v2': begin
 	dimension=1024
 	instrument='hera'
 	sources_file_name='GLEAM_EGC_catalog'
@@ -226,13 +265,29 @@ case version of
 	eor_sim=1
    end
 
-   'sim_hera19_eor': begin
-	;First platinum file, compressed frequencies
+
+   'sim_hera19_eor_comp': begin
+	;Uncompressed frequencies
 	dimension=1024
 	instrument='hera'
-	sources_file_name='GLEAM_EGC_catalog'
-	max_model_sources=0
-	dft_threshold=0
+	nfreq_avg=203
+	include_catalog_sources=0
+	eor_sim=1
+   end
+
+   'sim_hera19_eor_uncomp': begin
+	;Uncompressed frequencies
+	dimension=1024
+	instrument='hera'
+	nfreq_avg=1024
+	include_catalog_sources=0
+	eor_sim=1
+   end
+
+   'sim_hera19_eor': begin
+	;Uncompressed frequencies
+	dimension=1024
+	instrument='hera'
 	nfreq_avg=203
 	include_catalog_sources=0
 	eor_sim=1

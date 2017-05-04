@@ -127,7 +127,7 @@ if [ -z ${wallclock_time} ]; then
 fi
 #Set typical cores needed for standard FHD firstpass if not set.
 if [ -z ${ncores} ]; then
-    ncores=10
+    ncores=15
 fi
 #Set typical memory needed for standard FHD firstpass if not set.
 if [ -z ${mem} ]; then
@@ -190,7 +190,6 @@ for obs_id in "${obs_id_array[@]}"; do
 	endflag=1
      fi
 done	
-
 
 #echo ${good_obs_list[@]}
 
