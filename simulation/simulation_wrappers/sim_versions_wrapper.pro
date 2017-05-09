@@ -95,6 +95,17 @@ endif
 
 
 case version of
+; Add snapshot_healpix_export=0 for faster runtime if not doing eppsilon
+   'sim_hera19_diffuse_kelvin-convert': begin
+	dimension=1024
+	diffuse_model=filepath('gsm_150MHz.sav',root=rootdir('FHD'),subdir='catalog_data')
+	instrument='hera'
+        include_catalog_sources=0
+;	sources_file_name='GLEAM_EGC_catalog'
+	nfreq_avg=203
+	beam_model_version=2
+;	set_sidelobe_keywords=1
+   end
 
    'sim_hera19_diffuse_fine_comp_1hour': begin
 	dimension=1024
